@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 import { asProperDate } from "./common";
 import { STATUS_MAP, UpcomingRun } from "./types";
 
@@ -7,6 +8,24 @@ type Props = {
 };
 
 export default function Upcoming({ data }: Props) {
+  asProperDate;
+  const [sortedData, setSortedData] = useState<UpcomingRun[]>();
+  useEffect(() => {
+    data.sort((a, b) => {
+      if (!a.startDate) {
+        return 1;
+      } else if (!b.startDate) {
+        return -1;
+      } else {
+        return new Date(asProperDate(a.startDate)) <
+          new Date(asProperDate(b.startDate))
+          ? -1
+          : 1;
+      }
+    });
+    setSortedData(data);
+  }, data);
+
   return (
     <div>
       <table>
@@ -33,49 +52,50 @@ export default function Upcoming({ data }: Props) {
           </tr>
         </thead>
         <tbody>
-          {data.map((show) => {
-            return (
-              <tr key={show.name}>
-                <td>
-                  {show.imdb ? (
-                    <a href={show.imdb} target="_blank">
-                      {show.name}
-                    </a>
-                  ) : (
-                    show.name
-                  )}
-                </td>
-                <td>
-                  {show.startDate &&
-                  asProperDate(show.startDate) === show.startDate
-                    ? dayjs(Date.parse(asProperDate(show.startDate))).format(
-                        "MMM.D"
-                      )
-                    : (show.startDate?.charAt(0).toUpperCase() || "") +
-                      show.startDate?.slice(1)}
-                  {show.startDateUncertain ? "?" : ""}
-                </td>
-                <td>
-                  {show.page?.link ? (
-                    <a href={show.page?.link} target="_blank">
-                      {show.page?.title}
-                    </a>
-                  ) : (
-                    show.page?.title
-                  )}
-                </td>
-                <td>{show.genre}</td>
-                <td>{show.season}</td>
-                <td>
-                  {show.endDate &&
-                    dayjs(Date.parse(show.endDate)).format("MMM.D")}{" "}
-                  {STATUS_MAP[show.status]
-                    ? `(${STATUS_MAP[show.status]})`
-                    : ""}
-                </td>
-              </tr>
-            );
-          })}
+          {sortedData &&
+            sortedData.map((show) => {
+              return (
+                <tr key={show.name}>
+                  <td>
+                    {show.imdb ? (
+                      <a href={show.imdb} target="_blank">
+                        {show.name}
+                      </a>
+                    ) : (
+                      show.name
+                    )}
+                  </td>
+                  <td>
+                    {show.startDate &&
+                    asProperDate(show.startDate) === show.startDate
+                      ? dayjs(Date.parse(asProperDate(show.startDate))).format(
+                          "MMM.D"
+                        )
+                      : (show.startDate?.charAt(0).toUpperCase() || "") +
+                        show.startDate?.slice(1)}
+                    {show.startDateUncertain ? "?" : ""}
+                  </td>
+                  <td>
+                    {show.page?.link ? (
+                      <a href={show.page?.link} target="_blank">
+                        {show.page?.title}
+                      </a>
+                    ) : (
+                      show.page?.title
+                    )}
+                  </td>
+                  <td>{show.genre}</td>
+                  <td>{show.season}</td>
+                  <td>
+                    {show.endDate &&
+                      dayjs(Date.parse(show.endDate)).format("MMM.D")}{" "}
+                    {STATUS_MAP[show.status]
+                      ? `(${STATUS_MAP[show.status]})`
+                      : ""}
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </div>

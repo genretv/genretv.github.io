@@ -18,6 +18,7 @@ import {
 import Upcoming from "./Upcoming";
 import { merge } from "lodash";
 import { asProperDate } from "./common";
+import dayjs from "dayjs";
 
 const DEFAULT_DATA_URL = IS_DEV
   ? "http://localhost:3001/data.json"
@@ -106,6 +107,7 @@ function App() {
     const upcomingRuns: UpcomingRun[] = [];
     const pastShows: PastShow[] = [];
     const now = new Date();
+    const twoMonthsAgo = dayjs().add(-1, "month");
     if (data) {
       for (const show of data) {
         const finale =
@@ -139,7 +141,13 @@ function App() {
               const periodEnd = runningPeriod.endDate
                 ? new Date(runningPeriod.endDate)
                 : undefined;
-              if (periodStart <= now && (!periodEnd || now >= periodEnd)) {
+              if (
+                periodStart <= now &&
+                (!season.days ||
+                  season.days[0] !== "Binge" ||
+                  periodStart >= twoMonthsAgo.toDate()) &&
+                (!periodEnd || now >= periodEnd)
+              ) {
                 currentRun = {
                   days: season.days as Weekday[],
                   genre: show.genre,

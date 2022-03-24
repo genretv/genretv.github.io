@@ -10,19 +10,19 @@ export const STATUS_MAP = {
 } as const;
 const STATUSES = Object.keys(STATUS_MAP) as Array<keyof typeof STATUS_MAP>;
 export type Status = keyof typeof STATUS_MAP;
-// export type Status = typeof STATUSES[number];
 
-const WEEKDAYS = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-  "Binge",
-] as const;
-export type Weekday = typeof WEEKDAYS[number];
+export const WEEKDAY_MAP = {
+  Monday: 1,
+  Tuesday: 2,
+  Wednesday: 3,
+  Thursday: 4,
+  Friday: 5,
+  Saturday: 6,
+  Sunday: 7,
+  Binge: 8,
+} as const;
+const WEEKDAYS = Object.keys(WEEKDAY_MAP) as Array<keyof typeof WEEKDAY_MAP>;
+export type Weekday = keyof typeof WEEKDAY_MAP;
 
 export type Season = {
   num: number;

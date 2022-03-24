@@ -1,11 +1,26 @@
 import dayjs from "dayjs";
-import { CurrentRun, STATUS_MAP } from "./types";
+import { useEffect, useState } from "react";
+import { CurrentRun, STATUS_MAP, WEEKDAY_MAP } from "./types";
 
 type Props = {
   data: CurrentRun[];
 };
 
 export default function OnNow({ data }: Props) {
+  const [sortedData, setSortedData] = useState<CurrentRun[]>();
+  useEffect(() => {
+    data.sort((a, b) => {
+      if (!a.days || !a.days.length) {
+        return 1;
+      } else if (!b.days || !b.days.length) {
+        return -1;
+      } else {
+        return WEEKDAY_MAP[a.days[0]] - WEEKDAY_MAP[b.days[0]];
+      }
+    });
+    setSortedData(data);
+  }, data);
+
   return (
     <div>
       <table>
@@ -32,40 +47,41 @@ export default function OnNow({ data }: Props) {
           </tr>
         </thead>
         <tbody>
-          {data.map((show) => {
-            return (
-              <tr key={show.name}>
-                <td>
-                  {show.imdb ? (
-                    <a href={show.imdb} target="_blank">
-                      {show.name}
-                    </a>
-                  ) : (
-                    show.name
-                  )}
-                </td>
-                <td>{show.days ? show.days.join(", ") : "Unknown"}</td>
-                <td>
-                  {show.page?.link ? (
-                    <a href={show.page?.link} target="_blank">
-                      {show.page?.title}
-                    </a>
-                  ) : (
-                    show.page?.title
-                  )}
-                </td>
-                <td>{show.genre}</td>
-                <td>{show.season}</td>
-                <td>
-                  {show.endDate &&
-                    dayjs(Date.parse(show.endDate)).format("MMM.D")}{" "}
-                  {STATUS_MAP[show.status]
-                    ? `(${STATUS_MAP[show.status]})`
-                    : ""}
-                </td>
-              </tr>
-            );
-          })}
+          {sortedData &&
+            sortedData.map((show) => {
+              return (
+                <tr key={show.name}>
+                  <td>
+                    {show.imdb ? (
+                      <a href={show.imdb} target="_blank">
+                        {show.name}
+                      </a>
+                    ) : (
+                      show.name
+                    )}
+                  </td>
+                  <td>{show.days ? show.days.join(", ") : "Unknown"}</td>
+                  <td>
+                    {show.page?.link ? (
+                      <a href={show.page?.link} target="_blank">
+                        {show.page?.title}
+                      </a>
+                    ) : (
+                      show.page?.title
+                    )}
+                  </td>
+                  <td>{show.genre}</td>
+                  <td>{show.season}</td>
+                  <td>
+                    {show.endDate &&
+                      dayjs(Date.parse(show.endDate)).format("MMM.D")}{" "}
+                    {STATUS_MAP[show.status]
+                      ? `(${STATUS_MAP[show.status]})`
+                      : ""}
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </div>
