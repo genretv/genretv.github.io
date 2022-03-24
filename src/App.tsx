@@ -146,7 +146,7 @@ function App() {
                 (!season.days ||
                   season.days[0] !== "Binge" ||
                   periodStart >= twoMonthsAgo.toDate()) &&
-                (!periodEnd || now >= periodEnd)
+                (!periodEnd || now <= periodEnd)
               ) {
                 currentRun = {
                   days: season.days as Weekday[],
