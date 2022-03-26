@@ -1,4 +1,4 @@
-import Ajv, { JSONSchemaType } from "ajv";
+import { JSONSchemaType } from "ajv";
 
 export const IS_DEV = process.env.NODE_ENV === "development";
 
@@ -90,12 +90,9 @@ export const logSchema: JSONSchemaType<LogEntry[]> = {
       date: { type: "string" },
       text: { type: "string" },
     },
-    required: [],
+    required: ["date", "text"],
   },
 };
-const ajv = new Ajv();
-export const logValidator = ajv.compile(logSchema);
-
 export const showSchema: JSONSchemaType<Show[]> = {
   type: "array",
   items: {
@@ -114,10 +111,12 @@ export const showSchema: JSONSchemaType<Show[]> = {
           link: { type: "string", nullable: true },
         },
         nullable: true,
-        required: [],
+        required: ["link"],
+        additionalProperties: false,
       },
       seasons: {
         type: "array",
+        uniqueItems: true,
         items: {
           type: "object",
           properties: {
@@ -137,7 +136,8 @@ export const showSchema: JSONSchemaType<Show[]> = {
                 link: { type: "string", nullable: true },
               },
               nullable: true,
-              required: [],
+              required: ["link"],
+              additionalProperties: false,
             },
             runningPeriods: {
               type: "array",
@@ -150,16 +150,16 @@ export const showSchema: JSONSchemaType<Show[]> = {
                   endDateUncertain: { type: "boolean", nullable: true },
                 },
                 required: [],
+                additionalProperties: false,
               },
             },
           },
-          required: [],
+          required: ["num"],
+          additionalProperties: false,
         },
       },
     },
-    required: [],
+    required: ["name"],
     additionalProperties: false,
   },
 };
-
-export const showsValidator = ajv.compile(showSchema);

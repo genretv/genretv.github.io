@@ -1,37 +1,18 @@
 import { ErrorObject } from "ajv";
 import { useEffect, useState } from "react";
-import { createUseStyles } from "react-jss";
-import { IS_DEV, LogEntry, logValidator } from "./types";
+import { useAppSelector } from "./app/store";
+import { getLogs, logValidator } from "./common";
+import { LogEntry } from "./types";
 
-const DEFAULT_LOG_URL = IS_DEV
-  ? "http://localhost:3001/updateLog.json"
-  : "https://raw.githubusercontent.com/genretv/data/main/main/updateLog.json";
-
-const useStyles = createUseStyles({
-  update: {},
-});
-
-type Props = {};
-
-async function getLogs() {
-  const logUrl = window.localStorage.getItem("logUrl") || DEFAULT_LOG_URL;
-  const out = await fetch(logUrl);
-  if (out.ok) {
-    return await out.json();
-  } else {
-    return [out.statusText];
-  }
-}
-
-export default function TableHeader({}: Props) {
+export default function TableHeader() {
   const [logs, setLogs] = useState<LogEntry[]>();
   const [errors, setErrors] = useState<
     ErrorObject<string, Record<string, any>, unknown>[] | null
   >();
-  const classes = useStyles();
+  const logUrl = useAppSelector((state) => state.jsonfiles.updateLogUrl);
   useEffect(() => {
     (async () => {
-      const llogs = await getLogs();
+      const llogs = await getLogs(logUrl);
       if (logValidator(llogs)) {
         setLogs(llogs);
       } else {
@@ -48,7 +29,7 @@ export default function TableHeader({}: Props) {
         </p>
       )}
       {errors && errors.length > 0 && <p>{JSON.stringify(errors)}</p>}
-      <p className={classes.update}>
+      <p>
         Start dates for every sci-fi/fantasy shows so none of us miss the first
         episode of our favorite shows or new shows. I try to keep this list
         fairly up-to-date so that everyone can see at a glance what shows are

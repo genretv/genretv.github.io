@@ -1,11 +1,6 @@
 import { Box, CircularProgress, ClassNameMap } from "@mui/material";
 import CSS from "csstype";
 
-interface StyleProps {
-  position?: CSS.Property.Position;
-  top?: string;
-}
-
 interface Props {
   message?: string;
   size?: CSS.Property.FontSize;
