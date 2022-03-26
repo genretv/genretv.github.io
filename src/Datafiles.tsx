@@ -1,7 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, IconButton, TextField } from "@mui/material";
-import { difference } from "lodash";
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "./app/store";
@@ -38,10 +37,10 @@ export default function Datafiles() {
 
   useEffect(() => {
     const updates = controlledFields.map((x) => x.dataUrl);
-    if (
-      updates.length !== dataUrls.length ||
-      difference(updates, dataUrls).length > 0
-    ) {
+    const same =
+      updates.length === dataUrls.length &&
+      updates.join("") === dataUrls.join("");
+    if (!same) {
       dispatch(setDataUrls(controlledFields.map((x) => x.dataUrl)));
     }
   }, [controlledFields]);
