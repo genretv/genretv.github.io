@@ -3,10 +3,11 @@ import { ErrorObject } from "ajv";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import "./App.css";
-import { useAppSelector } from "./app/store";
-import { asProperDate, BOX_STYLE, getData, showsValidator } from "./common";
+import { useAppSelector } from "../app/store";
+import { asProperDate, BOX_STYLE, getData, showsValidator } from "../common";
 import OnNow from "./OnNow";
 import PastShows from "./PastShows";
+import Shows from "./Shows";
 import TableHeader from "./TableHeader";
 import {
   CurrentRun,
@@ -15,7 +16,7 @@ import {
   Status,
   UpcomingRun,
   Weekday,
-} from "./types";
+} from "../types";
 import Upcoming from "./Upcoming";
 
 const spacer = {
@@ -36,7 +37,8 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        const ldata = await getData(dataUrls);
+        const ldata: any[] = [];
+        // await getData(dataUrls);
         if (showsValidator(ldata)) {
           setData(ldata);
         } else {
@@ -178,6 +180,9 @@ function App() {
                 {"Errors loading data URL: " + JSON.stringify(errors)}
               </Typography>
             )}
+            <div>
+              <Shows />
+            </div>
             <div>
               {current && current.length > 0 && (
                 <>

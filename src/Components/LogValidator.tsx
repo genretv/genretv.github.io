@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getLogs, logValidator } from "./common";
-import { LogEntry } from "./types";
+import { getLogs, logValidator } from "../common";
+import { LogEntry } from "../types";
 
 const VALID_LOG_MESSAGE = "The update log JSON is valid";
 

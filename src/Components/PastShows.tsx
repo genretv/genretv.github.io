@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { PastShow } from "./types";
+import { PastShow } from "./../types";
 
 type Props = {
   data: PastShow[];

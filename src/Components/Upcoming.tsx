@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { asProperDate } from "./common";
-import { STATUS_MAP, UpcomingRun } from "./types";
+import { asProperDate } from "./../common";
+import { STATUS_MAP, UpcomingRun } from "./../types";
 
 type Props = {
   data: UpcomingRun[];

@@ -1,6 +1,16 @@
 import Ajv from "ajv";
+import dayjs from "dayjs";
 import { merge } from "lodash";
-import { logSchema, Show, showSchema } from "./types";
+import {
+  CurrentRun,
+  logSchema,
+  PastShow,
+  Show,
+  showSchema,
+  Status,
+  UpcomingRun,
+  Weekday,
+} from "./types";
 
 export const BOX_STYLE = {
   border: "solid 1px #dddddd",
@@ -10,6 +20,99 @@ export const BOX_STYLE = {
   maxWidth: "970px",
   margin: "30px auto",
 };
+
+export function splitData(
+  data: Show[]
+): [CurrentRun[], UpcomingRun[], PastShow[]] {
+  const currentRuns: CurrentRun[] = [];
+  const upcomingRuns: UpcomingRun[] = [];
+  const pastShows: PastShow[] = [];
+  const now = new Date();
+  const twoMonthsAgo = dayjs().add(-2, "month");
+  if (data) {
+    for (const show of data) {
+      if (!show.seasons || show.seasons.length === 0) continue;
+
+      const finale =
+        show.seasons.slice(-1)[0].runningPeriods?.slice(-1)[0].endDate || "";
+      if (
+        (show.status === "canceled" || show.status === "finished") &&
+        finale &&
+        new Date(finale) < now
+      ) {
+        pastShows.push({
+          genre: show.genre,
+          name: show.name,
+          page: show.page,
+          imdb: show.imdb,
+          status: show.status as Status,
+          statusUncertain: show.statusUncertain,
+          nbSeasons: show.seasons.length,
+          studio: show.seasons[0]?.studio,
+          finale,
+        });
+        continue;
+      }
+      let currentRun: CurrentRun | undefined = undefined;
+      let upcomingRun: UpcomingRun | undefined = undefined;
+      for (const season of show.seasons) {
+        if (season.runningPeriods) {
+          for (const runningPeriod of season.runningPeriods) {
+            const periodStart = new Date(asProperDate(runningPeriod.startDate));
+            const periodEnd = runningPeriod.endDate
+              ? new Date(runningPeriod.endDate)
+              : undefined;
+            if (
+              periodStart <= now &&
+              (!season.days ||
+                season.days[0] !== "Binge" ||
+                periodStart >= twoMonthsAgo.toDate()) &&
+              (!periodEnd || now <= periodEnd)
+            ) {
+              currentRun = {
+                days: season.days as Weekday[],
+                genre: show.genre,
+                name: show.name,
+                page: season.page,
+                imdb: show.imdb,
+                status: show.status as Status,
+                statusUncertain: show.statusUncertain,
+                season: season.num,
+                studio: season.studio,
+                startDate: runningPeriod.startDate,
+                endDate: runningPeriod.endDate,
+                startDateUncertain: runningPeriod.startDateUncertain,
+                endDateUncertain: runningPeriod.endDateUncertain,
+              };
+              break;
+            } else if (periodStart >= now) {
+              upcomingRun = {
+                genre: show.genre,
+                name: show.name,
+                page: season.page,
+                imdb: show.imdb,
+                status: show.status as Status,
+                statusUncertain: show.statusUncertain,
+                season: season.num,
+                studio: season.studio,
+                startDate: runningPeriod.startDate,
+                endDate: runningPeriod.endDate,
+                startDateUncertain: runningPeriod.startDateUncertain,
+                endDateUncertain: runningPeriod.endDateUncertain,
+              };
+            }
+          }
+        }
+      }
+      if (currentRun) {
+        currentRuns.push(currentRun);
+      } else if (upcomingRun) {
+        upcomingRuns.push(upcomingRun);
+      }
+    }
+  }
+  return [currentRuns, upcomingRuns, pastShows];
+}
 
 export function asProperDate(stringDate: string) {
   const now = new Date();
@@ -59,6 +162,28 @@ export async function getData(dataUrls: string[]) {
     }
   }
   return Object.values(theData);
+}
+
+export async function sendToGithub(repo: string, data: string, path: string) {
+  const out = await fetch(
+    `https://api.github.com/repos/${repo}/contents/${path}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `token ${process.env.GITHUB_TOKEN}`,
+      },
+      body: JSON.stringify({
+        message: "Updated data",
+        content: Buffer.from(data).toString("base64"),
+      }),
+    }
+  );
+  if (out.ok) {
+    return await out.json();
+  } else {
+    throw new Error(out.statusText);
+  }
 }
 
 const ajv = new Ajv({ strict: true });

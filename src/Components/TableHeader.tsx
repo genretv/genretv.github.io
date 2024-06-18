@@ -1,8 +1,8 @@
 import { ErrorObject } from "ajv";
 import { useEffect, useState } from "react";
-import { useAppSelector } from "./app/store";
-import { getLogs, logValidator } from "./common";
-import { LogEntry } from "./types";
+import { useAppSelector } from "./../app/store";
+import { getLogs, logValidator } from "./../common";
+import { LogEntry } from "./../types";
 
 export default function TableHeader() {
   const [logs, setLogs] = useState<LogEntry[]>();

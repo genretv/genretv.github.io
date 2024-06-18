@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "./app/store";
-import { setUpdateLogUrl } from "./features/jsonfiles/Jsonfiles";
+import { useAppDispatch, useAppSelector } from "./../app/store";
+import { setUpdateLogUrl } from "./../features/jsonfiles/Jsonfiles";
 import LogValidator from "./LogValidator";
 
 export default function Logfiles() {

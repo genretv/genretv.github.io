@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { CurrentRun, STATUS_MAP, WEEKDAY_MAP } from "./types";
+import { CurrentRun, STATUS_MAP, WEEKDAY_MAP } from "../types";
 
 type Props = {
   data: CurrentRun[];

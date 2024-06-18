@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getData, showsValidator } from "./common";
+import { getData, showsValidator } from "./../common";
 import Loading from "./Loading";
-import { Show } from "./types";
+import { Show } from "./../types";
 
 const VALID_DATA_MESSAGE = "The data JSON is valid";
 

@@ -1,4 +1,5 @@
 import { JSONSchemaType } from "ajv";
+import { z } from "zod";
 
 export const IS_DEV = process.env.NODE_ENV === "development";
 
@@ -21,15 +22,17 @@ export const WEEKDAY_MAP = {
   Sunday: 7,
   Binge: 8,
 } as const;
-const WEEKDAYS = Object.keys(WEEKDAY_MAP) as Array<keyof typeof WEEKDAY_MAP>;
+export const WEEKDAYS = Object.keys(WEEKDAY_MAP) as Array<
+  keyof typeof WEEKDAY_MAP
+>;
 export type Weekday = keyof typeof WEEKDAY_MAP;
 
 export type Season = {
   num: number;
-  days: Weekday[];
-  studio: string;
-  page: { title: string; link: string };
-  runningPeriods: {
+  days?: Weekday[];
+  studio?: string;
+  page?: { title: string; link: string };
+  runningPeriods?: {
     startDate: string;
     startDateUncertain?: boolean;
     endDate?: string;
@@ -39,9 +42,9 @@ export type Season = {
 
 export type Show = {
   name: string;
-  imdb: string;
+  imdb?: string;
   seasons: Season[];
-  genre: string;
+  genre?: string;
   page?: { title: string; link: string };
   status: Status;
   statusUncertain: boolean;
@@ -50,7 +53,7 @@ export type Show = {
 
 type TableData = {
   name: string;
-  genre: string;
+  genre?: string;
   status: Status;
   statusUncertain: boolean;
   studio?: string;
@@ -123,6 +126,7 @@ export const showSchema: JSONSchemaType<Show[]> = {
             num: { type: "integer" },
             days: {
               type: "array",
+              nullable: true,
               items: {
                 type: "string",
                 enum: WEEKDAYS,
@@ -141,6 +145,7 @@ export const showSchema: JSONSchemaType<Show[]> = {
             },
             runningPeriods: {
               type: "array",
+              nullable: true,
               items: {
                 type: "object",
                 properties: {
@@ -163,3 +168,47 @@ export const showSchema: JSONSchemaType<Show[]> = {
     additionalProperties: false,
   },
 };
+
+export const zshowSchema = z.array(
+  z
+    .object({
+      name: z.string(),
+      imdb: z.string().optional(),
+      genre: z.string().optional(),
+      status: z.nativeEnum(STATUS_MAP).optional(),
+      statusUncertain: z.boolean().optional(),
+      studio: z.string().optional(),
+      page: z
+        .object({ title: z.string().optional(), link: z.string() })
+        .strict()
+        .optional(),
+      seasons: z
+        .array(
+          z
+            .object({
+              num: z.any(),
+              days: z.array(z.nativeEnum(WEEKDAY_MAP)).optional(),
+              studio: z.string().optional(),
+              page: z
+                .object({ title: z.string().optional(), link: z.string() })
+                .strict()
+                .optional(),
+              runningPeriods: z
+                .array(
+                  z
+                    .object({
+                      startDate: z.string().optional(),
+                      startDateUncertain: z.boolean().optional(),
+                      endDate: z.string().optional(),
+                      endDateUncertain: z.boolean().optional(),
+                    })
+                    .strict()
+                )
+                .optional(),
+            })
+            .strict()
+        )
+        .optional(),
+    })
+    .strict()
+);

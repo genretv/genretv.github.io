@@ -3,9 +3,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, Button, IconButton, TextField } from "@mui/material";
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { useAppDispatch, useAppSelector } from "./app/store";
+import { useAppDispatch, useAppSelector } from "../app/store";
 import DataValidator from "./DataValidator";
-import { setDataUrls } from "./features/jsonfiles/Jsonfiles";
+import { setDataUrls } from "../features/jsonfiles/Jsonfiles";
 
 type FormValues = {
   fieldArray: { dataUrl: string }[];
