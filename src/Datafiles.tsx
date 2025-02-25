@@ -31,25 +31,20 @@ export default function Datafiles() {
     replace(
       dataUrls.map((u) => {
         return { dataUrl: u };
-      })
+      }),
     );
   }, []);
 
   useEffect(() => {
     const updates = controlledFields.map((x) => x.dataUrl);
-    const same =
-      updates.length === dataUrls.length &&
-      updates.join("") === dataUrls.join("");
+    const same = updates.length === dataUrls.length && updates.join("") === dataUrls.join("");
     if (!same) {
       dispatch(setDataUrls(controlledFields.map((x) => x.dataUrl)));
     }
   }, [controlledFields]);
 
   return (
-    <DataValidator
-      urls={controlledFields.map((x) => x.dataUrl)}
-      title="Data URLs"
-    >
+    <DataValidator urls={controlledFields.map((x) => x.dataUrl)} title="Data URLs">
       <Button
         onClick={() =>
           append({
@@ -61,12 +56,9 @@ export default function Datafiles() {
       >
         Add Data URL
       </Button>
-      {controlledFields.map((field, index) => {
+      {controlledFields.map((_field, index) => {
         return (
-          <Box
-            key={`fieldArray.${index}.dataUrl`}
-            sx={{ padding: 2, width: "100%" }}
-          >
+          <Box key={`fieldArray.${index}.dataUrl`} sx={{ padding: 2, width: "100%" }}>
             <TextField
               sx={{ width: "90%" }}
               label="Data URL"

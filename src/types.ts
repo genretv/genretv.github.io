@@ -1,6 +1,6 @@
 import { JSONSchemaType } from "ajv";
 
-export const IS_DEV = process.env.NODE_ENV === "development";
+export const IS_DEV = import.meta.env.DEV;
 
 export const STATUS_MAP = {
   renewed: "r",
@@ -93,24 +93,24 @@ export const logSchema: JSONSchemaType<LogEntry[]> = {
     required: ["date", "text"],
   },
 };
-export const showSchema: JSONSchemaType<Show[]> = {
+// export const showSchema: JSONSchemaType<Show[]> = {
+export const showSchema: any = {
   type: "array",
   items: {
     type: "object",
     properties: {
       name: { type: "string" },
-      imdb: { type: "string", nullable: true },
-      genre: { type: "string", nullable: true },
-      status: { type: "string", nullable: true, enum: STATUSES },
-      statusUncertain: { type: "boolean", nullable: true },
-      studio: { type: "string", nullable: true },
+      imdb: { type: "string" },
+      genre: { type: "string" },
+      status: { type: "string", enum: STATUSES },
+      statusUncertain: { type: "boolean" },
+      studio: { type: "string" },
       page: {
         type: "object",
         properties: {
-          title: { type: "string", nullable: true },
-          link: { type: "string", nullable: true },
+          title: { type: "string" },
+          link: { type: "string" },
         },
-        nullable: true,
         required: ["link"],
         additionalProperties: false,
       },
@@ -128,14 +128,13 @@ export const showSchema: JSONSchemaType<Show[]> = {
                 enum: WEEKDAYS,
               },
             },
-            studio: { type: "string", nullable: true },
+            studio: { type: "string" },
             page: {
               type: "object",
               properties: {
-                title: { type: "string", nullable: true },
-                link: { type: "string", nullable: true },
+                title: { type: "string" },
+                link: { type: "string" },
               },
-              nullable: true,
               required: ["link"],
               additionalProperties: false,
             },
@@ -144,22 +143,22 @@ export const showSchema: JSONSchemaType<Show[]> = {
               items: {
                 type: "object",
                 properties: {
-                  startDate: { type: "string", nullable: true },
+                  startDate: { type: "string" },
                   startDateUncertain: { type: "boolean", nullable: true },
-                  endDate: { type: "string", nullable: true },
+                  endDate: { type: "string" },
                   endDateUncertain: { type: "boolean", nullable: true },
                 },
-                required: [],
+                required: ["startDate"],
                 additionalProperties: false,
               },
             },
           },
-          required: ["num"],
+          required: ["num", "days", "runningPeriods"],
           additionalProperties: false,
         },
       },
     },
-    required: ["name"],
+    required: ["name", "imdb", "genre", "status", "statusUncertain", "seasons"],
     additionalProperties: false,
   },
 };

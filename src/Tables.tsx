@@ -8,29 +8,20 @@ import { asProperDate, BOX_STYLE, getData, showsValidator } from "./common";
 import OnNow from "./OnNow";
 import PastShows from "./PastShows";
 import TableHeader from "./TableHeader";
-import {
-  CurrentRun,
-  PastShow,
-  Show,
-  Status,
-  UpcomingRun,
-  Weekday,
-} from "./types";
+import { CurrentRun, PastShow, Show, Status, UpcomingRun, Weekday } from "./types";
 import Upcoming from "./Upcoming";
 
 const spacer = {
   margin: "1em 0",
 };
 
-function App() {
+export default function Tables() {
   const [current, setCurrent] = useState<CurrentRun[]>();
   const [upcoming, setUpcoming] = useState<UpcomingRun[]>();
   const [past, setPast] = useState<PastShow[]>();
 
   const [data, setData] = useState<Show[]>();
-  const [errors, setErrors] = useState<
-    ErrorObject<string, Record<string, any>, unknown>[] | null
-  >();
+  const [errors, setErrors] = useState<ErrorObject<string, Record<string, any>, unknown>[] | null>();
   const dataUrls = useAppSelector((state) => state.jsonfiles.dataUrls);
 
   useEffect(() => {
@@ -56,13 +47,8 @@ function App() {
     const twoMonthsAgo = dayjs().add(-2, "month");
     if (data) {
       for (const show of data) {
-        const finale =
-          show.seasons.slice(-1)[0].runningPeriods.slice(-1)[0].endDate || "";
-        if (
-          (show.status === "canceled" || show.status === "finished") &&
-          finale &&
-          new Date(finale) < now
-        ) {
+        const finale = show.seasons.slice(-1)[0].runningPeriods.slice(-1)[0].endDate || "";
+        if ((show.status === "canceled" || show.status === "finished") && finale && new Date(finale) < now) {
           pastShows.push({
             genre: show.genre,
             name: show.name,
@@ -81,17 +67,11 @@ function App() {
         for (const season of show.seasons) {
           if (season.runningPeriods) {
             for (const runningPeriod of season.runningPeriods) {
-              const periodStart = new Date(
-                asProperDate(runningPeriod.startDate)
-              );
-              const periodEnd = runningPeriod.endDate
-                ? new Date(runningPeriod.endDate)
-                : undefined;
+              const periodStart = new Date(asProperDate(runningPeriod.startDate));
+              const periodEnd = runningPeriod.endDate ? new Date(runningPeriod.endDate) : undefined;
               if (
                 periodStart <= now &&
-                (!season.days ||
-                  season.days[0] !== "Binge" ||
-                  periodStart >= twoMonthsAgo.toDate()) &&
+                (!season.days || season.days[0] !== "Binge" || periodStart >= twoMonthsAgo.toDate()) &&
                 (!periodEnd || now <= periodEnd)
               ) {
                 currentRun = {
@@ -163,10 +143,7 @@ function App() {
           </div>
           <div>
             <p>
-              <span>
-                Premiere and Finale dates for all current and upcoming genre tv
-                shows.
-              </span>
+              <span>Premiere and Finale dates for all current and upcoming genre tv shows.</span>
             </p>
           </div>
         </Box>
@@ -203,5 +180,3 @@ function App() {
     </Box>
   );
 }
-
-export default App;
