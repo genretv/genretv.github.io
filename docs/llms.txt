@@ -1,0 +1,13 @@
+# GenreTV
+
+> End-user help for browsing the canonical GenreTV schedule, managing a personal list, publishing and importing lists, contributing canonical proposals, and maintaining canonical data.
+
+## Documentation Sets
+
+- [Abridged documentation](https://genretv.github.io/docs/llms-small.txt): a compact version of the documentation for GenreTV, with non-essential content removed
+- [Complete documentation](https://genretv.github.io/docs/llms-full.txt): the full documentation for GenreTV
+
+## Notes
+
+- The complete documentation includes all content from the official documentation
+- The content is automatically generated from the same source as the official documentation

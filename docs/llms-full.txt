@@ -1,0 +1,571 @@
+<SYSTEM>This is the full developer documentation for GenreTV</SYSTEM>
+
+# GenreTV Help
+
+> Help for browsing the schedule, managing your list, publishing, and contributing to GenreTV.
+
+Find something to watch
+
+Understand Now Showing, Upcoming, Awaiting Renewal or Cancellation, and Finished, then narrow each section with search and filters.
+
+Build your list
+
+Sign in to add, edit, or hide Shows and Seasons while keeping GenreTV’s Canonical List as your baseline.
+
+Publish and import
+
+Apply to publish a snapshot of your list, or bring Seasons from another published list into your own.
+
+Improve the canonical schedule
+
+Publishers can send proposals; maintainers can inspect differences and selectively merge trusted changes.
+
+GenreTV keeps its working database in your browser. Start with [Welcome to GenreTV](/docs/getting-started/) or go directly to [the schedule](/).
+
+# Account and local data
+
+> Sign in, recover access, and understand GenreTV's browser-local database.
+
+## Sign in and sign up
+
+[Section titled “Sign in and sign up”](#sign-in-and-sign-up)
+
+Use **Sign in** in the application header. The same screen links to **Create account** and **Forgot password?**. A new account begins with the Canonical List and an empty Personal List overlay.
+
+## Recover a password
+
+[Section titled “Recover a password”](#recover-a-password)
+
+Select **Forgot password?**, enter the account email, and send the recovery message. Open the recovery link from that email before entering a new password. The reset form remains disabled when no recovery session is present.
+
+## Your profile
+
+[Section titled “Your profile”](#your-profile)
+
+After signing in, select your email address in the header. You can set a display name, public slug, bio, and whether the profile is public. A public profile can provide attribution for published lists.
+
+## Local database behavior
+
+[Section titled “Local database behavior”](#local-database-behavior)
+
+GenreTV stores its working data in a PGlite database inside your browser. Canonical data is prepared for anonymous use; after sign-in, the store is associated with your account and personal shapes are loaded as needed.
+
+Signing out does **not** delete that mapped local database. It may contain synchronized or not-yet-synchronized account data. Browser storage controls remain the explicit way to delete it.
+
+After the application and relevant data have loaded once, previously synchronized data remains available during connectivity loss. Supported edits save locally and queue for automatic synchronization when the connection returns. Authentication actions and the first load of data you have never opened still require a connection.
+
+For portable copies, see [Export your data](/docs/account/exports/).
+
+# Export your data
+
+> Download canonical schedules, personal lists, or PGlite database backups.
+
+Open [Export](/#/export). Anonymous visitors see the two canonical actions. Signed-in users also see two personal actions.
+
+## Canonical HTML
+
+[Section titled “Canonical HTML”](#canonical-html)
+
+Downloads one unstyled HTML fragment containing all four canonical schedule tables. It resembles the original GenreTV table format and includes resolved Show and Season information, but no Episode details or interactive controls.
+
+The export ignores filters, custom sorting, pagination, and expanded rows.
+
+## Canonical database
+
+[Section titled “Canonical database”](#canonical-database)
+
+Downloads portable SQL containing only canonical Show, Season, and Episode base tables and their data. It excludes views, synchronization registry relations, functions, triggers, and personal data.
+
+## Personal HTML
+
+[Section titled “Personal HTML”](#personal-html)
+
+**Requires sign-in.** Downloads the fully resolved Personal List: the canonical baseline after applying your additions, overrides, hidden items, and linked or detached imports. It is not merely the sparse overlay rows.
+
+## Local database
+
+[Section titled “Local database”](#local-database)
+
+**Requires sign-in.** Downloads a complete backup of the account’s mapped PGlite store, including synchronization metadata and unsynced local writes. This is the comprehensive diagnostic and recovery-oriented export.
+
+Database export tooling loads only when you request a database export, so it does not delay GenreTV’s initial application or schedule loading.
+
+# Schedule basics
+
+> Read GenreTV's schedule tables on desktop and mobile.
+
+The Schedule is GenreTV’s public view of release-relevant Seasons. It is not a complete season history: older Seasons remain available in management while the Schedule shows the rows useful for deciding what is on, coming, unresolved, or finished.
+
+![The GenreTV Schedule with four release sections, filters, and the Now Showing table.](/docs/screenshots/schedule.png)
+
+## Read a row
+
+[Section titled “Read a row”](#read-a-row)
+
+The desktop table presents:
+
+* **Show**: the Show title, linked to IMDb when available;
+* **Status**: useful lifecycle or release context;
+* **Where**: ordered networks, streamers, or other Organizations, linked to official sites when available;
+* **Genre**: descriptive Genre Tags;
+* **Seasons**: the Official Season Count, with Extra Releases shown separately where relevant;
+* **When**: the release date or Release Window; and
+* **Finale**: the known finale timing when applicable.
+
+Select **+** to reveal links, notes, and other available details. Selecting a Genre value applies it as a filter.
+
+## Mobile view
+
+[Section titled “Mobile view”](#mobile-view)
+
+On a narrow screen, each row keeps the Show title and timing visible. Secondary values such as platform, Genre, language, and season count move into the expandable details. The section tabs use an icon and row count so all four remain reachable without horizontal scrolling.
+
+## Counts and pagination
+
+[Section titled “Counts and pagination”](#counts-and-pagination)
+
+Each section tab shows its current row count. The footer reports the filtered row total and page number. Use **Rows** to display 20, 50, or 100 results per page.
+
+The same Show can have more than one upcoming row when multiple future Seasons or Extra Releases are known.
+
+# Search, filter, and sort
+
+> Narrow a schedule section without changing the underlying list.
+
+Controls apply to the active Schedule Section. Their available Language, Genre, and platform values are derived from rows in that section, so switching sections can change the choices.
+
+## Search
+
+[Section titled “Search”](#search)
+
+Enter text in **Search** to narrow the visible rows. Search is useful for titles and the metadata included by the current schedule query.
+
+## Filters
+
+[Section titled “Filters”](#filters)
+
+* **Platform** selects an Organization such as a network or streamer.
+* **Language** accepts zero or more language codes.
+* **Genre** accepts zero or more Genre Tags.
+
+Select a Genre directly in a table row to apply it. Open a multi-select filter and choose **Clear** to remove all values.
+
+## Sorting
+
+[Section titled “Sorting”](#sorting)
+
+Use **Sort** or a sortable table heading to choose the ordering. Selecting the same heading again reverses its direction. Finished starts with newest timing first; the other sections start with earliest timing first.
+
+## Browser-local preferences
+
+[Section titled “Browser-local preferences”](#browser-local-preferences)
+
+GenreTV saves these viewing preferences in local browser storage for both anonymous and signed-in visitors. They create free filtered views of the same list; they do not create separate lists or publish changes.
+
+HTML exports ignore search, filters, sorting, pagination, and expanded-row state. They always contain all four sections in default order.
+
+# Sections and dates
+
+> Understand dynamic schedule placement and imprecise release timing.
+
+GenreTV derives the active Schedule Section from release information and the current date. A row can therefore move between sections without anyone manually moving it.
+
+## Now Showing
+
+[Section titled “Now Showing”](#now-showing)
+
+Shows Seasons that are currently releasing. A weekly Season remains current through its known finale. A bulk or binge release remains current for a grace period after its release date; the Schedule labels an active bulk release **Binge**.
+
+## Upcoming
+
+[Section titled “Upcoming”](#upcoming)
+
+Shows announced future Seasons and Extra Releases. Multiple greenlit Seasons may all appear, including estimated windows when exact dates are not yet known. A known renewal belongs here rather than in Awaiting Renewal or Cancellation.
+
+## Awaiting Renewal or Cancellation
+
+[Section titled “Awaiting Renewal or Cancellation”](#awaiting-renewal-or-cancellation)
+
+Shows the latest concluded Season of an open Show when there is no current or future Season and no confirmed decision that the Show has ended or been cancelled.
+
+## Finished
+
+[Section titled “Finished”](#finished)
+
+Shows the latest relevant release for Shows known to have ended or been cancelled. The status explains the outcome when known, including cancellation. Finished defaults to reverse chronological timing; other sections default to earliest first.
+
+## Exact and imprecise timing
+
+[Section titled “Exact and imprecise timing”](#exact-and-imprecise-timing)
+
+A Release Window may be an exact date, a month, a Northern Hemisphere meteorological season, or a year. GenreTV preserves that precision instead of inventing an exact date.
+
+For ordering, an imprecise value sorts at the **end** of its period. An exact date in the same period therefore appears first. For example, an exact June date sorts before an imprecise `June`, and an exact autumn date sorts before `Autumn`.
+
+Timing may also carry confirmed, tentative, inferred, rumored, or estimated confidence. Treat imprecise and lower-confidence values as planning guidance rather than broadcast guarantees.
+
+# Canonical proposals
+
+> Send your Show, Season, or Episode changes to canonical maintainers.
+
+**Requires:** current publishing permission.
+
+Editing your Personal List never directly changes the Canonical List. When a personal Show, Season, or Episode would improve the shared data, open its management editor and use **Send to canonical**.
+
+Add a note that helps a maintainer understand the source, correction, or reason for inclusion. The proposal captures the relevant item and required parent context so maintainers can review it without manually reconstructing your hierarchy.
+
+## What happens next
+
+[Section titled “What happens next”](#what-happens-next)
+
+The proposal appears in the maintainer review queue and creates an internal notification. A maintainer can:
+
+* **Approve + merge** selected proposed fields and records;
+* **Reject** a proposal that should not be incorporated; or
+* **Close** a duplicate or otherwise completed request without merging it.
+
+Approval is field-selective. Existing canonical Shows, Seasons, or Episodes can be updated, while missing parent or child records can be created where needed. A proposal does not grant you direct canonical editing permission.
+
+# Welcome to GenreTV
+
+> Learn what GenreTV tracks and what signing in adds.
+
+GenreTV tracks science-fiction, fantasy, supernatural, superhero, and related television releases. Anyone can browse the shared **Canonical List**. Signing in adds a **Personal List** that starts with the same canonical schedule and records only your own changes.
+
+## Browse without an account
+
+[Section titled “Browse without an account”](#browse-without-an-account)
+
+Open [the Schedule](/) to:
+
+* switch among Now Showing, Upcoming, Awaiting Renewal or Cancellation, and Finished;
+* search and filter the active section;
+* sort its table and choose 20, 50, or 100 rows per page;
+* open a row’s extra details; and
+* follow available IMDb and official platform links.
+
+Your schedule filters and ordering are saved in this browser. They are viewing preferences, not changes to the Canonical List.
+
+## What signing in adds
+
+[Section titled “What signing in adds”](#what-signing-in-adds)
+
+With an account you can:
+
+* manage your own Shows, Seasons, and optional Episodes;
+* hide inherited rows from your Personal List;
+* import linked or independent copies from published lists;
+* create a public profile;
+* apply for permission to publish snapshots; and
+* export your resolved Personal List or complete local database.
+
+New accounts do not copy every canonical row. Your empty overlay resolves to the Canonical List until you make a personal change.
+
+## Create an account
+
+[Section titled “Create an account”](#create-an-account)
+
+Select **Sign in**, then **Create account**. Enter an email address and password. If email confirmation is enabled, follow the confirmation message before signing in.
+
+GenreTV creates and prepares a local browser database during initial loading. After sign-in, that database is associated with your account and user-specific data begins synchronizing.
+
+## Install and use offline
+
+[Section titled “Install and use offline”](#install-and-use-offline)
+
+After the first successful load, use the application’s install prompt when your browser offers it. The installed app and previously synchronized data can reopen without a connection. Signed-in edits save to the local database and synchronize when you reconnect. First use, authentication, external links, and data you have never loaded still require a connection.
+
+GenreTV announces application updates instead of silently reloading. Finish synchronizing local work before applying a waiting update.
+
+Next, learn [how the Schedule works](/docs/browse/) or [how to build your Personal List](/docs/lists/).
+
+# Your personal list
+
+> Understand the canonical baseline, personal changes, and hidden rows.
+
+**Requires:** a signed-in account.
+
+Your Personal List combines the Canonical List with your own List Overlay. An untouched account therefore looks like the canonical schedule without storing a private duplicate of every Show and Season.
+
+Open [Manage](/#/manage) to search the complete Show-oriented management view. Unlike the Schedule, management includes known historical Seasons and optional Episode records.
+
+![The signed-in Shows management view with filters, known Season counts, and Edit actions.](/docs/screenshots/management.png)
+
+## Personal changes
+
+[Section titled “Personal changes”](#personal-changes)
+
+You can add your own Shows, Seasons, and Episodes or override metadata inherited from the Canonical List. Saves commit to the browser-local database first and are queued for synchronization, so editing remains available offline after the app and account data have been loaded once.
+
+Unknown values are valid. A Season can have no Episode rows, and its Episode Count can also be unknown.
+
+## Hidden rows
+
+[Section titled “Hidden rows”](#hidden-rows)
+
+Hiding removes an inherited item from your Personal List without deleting the canonical source. Open **Hidden rows** from Manage to inspect and restore hidden items.
+
+## Local saves and drafts
+
+[Section titled “Local saves and drafts”](#local-saves-and-drafts)
+
+Editors can preserve unsaved form values while you work. Select the editor’s save action to commit those values to the local database. A local save is durable and immediately visible in your Personal List, but other devices and users cannot see it until synchronization completes. The header status and [Synchronization](/#/sync) page show that distinction.
+
+For the data hierarchy and editor flow, see [Edit Shows and Seasons](/docs/lists/edit/).
+
+# Edit shows and seasons
+
+> Use GenreTV's Show-first management interface.
+
+**Requires:** a signed-in account.
+
+Management is organized by the data hierarchy, not by the four Schedule Sections:
+
+1. Open [Manage](/#/manage) and search for a Show.
+2. Select **Edit** or any non-title part of its row. When IMDb is known, the title itself opens IMDb in a new tab.
+3. Edit Show metadata and inspect its Seasons.
+4. Open a Season to edit its release metadata and inspect optional Episodes.
+5. Open an Episode to edit Episode-specific metadata.
+
+## Add a Show
+
+[Section titled “Add a Show”](#add-a-show)
+
+Select **Add show**. Saving a new Show creates its initial Season as part of the local editing flow. Add every known numbered Season; metadata may remain unknown where the source does not provide it.
+
+## Show fields
+
+[Section titled “Show fields”](#show-fields)
+
+Show editing includes title and original title, lifecycle status, ordered languages and countries, Genre Tags, External Links, Organizations, and notes. Lifecycle status belongs to the Show: Seasons are releases, not independently cancelled Shows.
+
+## Season fields
+
+[Section titled “Season fields”](#season-fields)
+
+A Season can be numbered or represent an Extra Release such as a special, movie, pilot, or other one-off. Its timing can use an exact or imprecise Release Window, a confidence level, a weekly or bulk Release Pattern, finale information, Organizations, links, and notes.
+
+## Episodes
+
+[Section titled “Episodes”](#episodes)
+
+Episodes are optional. Do not create placeholder Episode rows merely to satisfy a count. Add them when useful information is known.
+
+## Save feedback
+
+[Section titled “Save feedback”](#save-feedback)
+
+Saving commits the change to your browser-local database and durable synchronization queue immediately. It works without a network connection and the editor reports that the change was saved locally. The header’s **Synchronization** status shows whether the work has reached the server.
+
+Queued changes survive reloads. When connectivity returns, GenreTV resumes synchronization automatically. Open the [Synchronization](/#/sync) page to inspect pending work, retry failed entries, or explicitly discard a conflicted or quarantined change.
+
+# Maintainer review
+
+> Review publishing applications, notifications, and canonical proposals.
+
+**Requires:** the Canonical Maintainer role.
+
+Open [Publishing](/#/publishing). Maintainers see a **Review queue** with counts for open Publish Applications, open Canonical Proposals, and unread notifications.
+
+![The maintainer Publishing page with its review queue and workflow history.](/docs/screenshots/maintainer-review.png)
+
+## Publishing applications
+
+[Section titled “Publishing applications”](#publishing-applications)
+
+Review the applicant’s message and current status. Approving an application unlocks publishing through the application-based permission path. This does not automatically grant the durable Publisher role. Reject applications that should not receive current permission.
+
+## Canonical proposals
+
+[Section titled “Canonical proposals”](#canonical-proposals)
+
+Filter proposals by status and kind, then inspect the structured differences. For an approval:
+
+1. compare proposed values with the current canonical record;
+2. select the fields or child records worth applying;
+3. add a reviewer note when useful; and
+4. choose **Approve + merge**.
+
+Canonical proposals may come from publishers or from the canonical Blogspot importer. Imported proposals show their source and observation time, but follow the same review rules as any other proposal. Expand **Review accepted fields**, leave checked only the fields that should enter the canonical list, and edit a value when the source needs correction. Approval stores those reviewed values separately from the original submission.
+
+Use **Reject** when the contribution should not enter the Canonical List. Use **Close** for duplicates or requests resolved another way. Duplicate and conflict warnings require judgment; GenreTV does not silently merge records by title alone.
+
+## Notifications and history
+
+[Section titled “Notifications and history”](#notifications-and-history)
+
+Review actions update the associated notification state. Use **Mark all read** for remaining informational notices. **Show history** includes completed applications and proposals so prior decisions remain inspectable.
+
+# Publish a list
+
+> Apply for publishing permission and create public snapshots.
+
+**Requires:** a signed-in account. Publishing a snapshot additionally requires current publishing permission.
+
+Open [Publishing](/#/publishing). If you cannot yet publish, the page shows **Apply to publish**. Add an optional message and submit the application. An open application remains visible while it awaits maintainer review.
+
+![The Publishing page showing the public snapshot editor available to an approved Publisher.](/docs/screenshots/publishing.png)
+
+## How permission works
+
+[Section titled “How permission works”](#how-permission-works)
+
+A maintainer can approve an application, which currently unlocks publishing in the app. This is separate from a durable system Publisher role; either an approved application or an appropriate seeded role can allow publishing.
+
+## Publish a snapshot
+
+[Section titled “Publish a snapshot”](#publish-a-snapshot)
+
+When publishing is available:
+
+1. Enter a public **Title** and unique **Slug**.
+2. Add an optional description.
+3. Optionally enter a Publish filter to limit the resolved list snapshot.
+4. Review the number of Season rows that will be included.
+5. Select **Publish snapshot** and wait for all writes to be acknowledged.
+
+Publishing stores a snapshot, not a live view of every subsequent personal edit. Publishing the same owned slug again creates the next snapshot version. Your published lists are shown on the same page and are discoverable through [Published Lists](/#/published).
+
+Create a display name, public slug, bio, and public-profile setting from your email link in the app header. Public profiles can show their owner’s published lists.
+
+# Import from published lists
+
+> Choose between linked imports and detached copies.
+
+Anyone can browse [Published Lists](/#/published). **Importing requires a signed-in account.**
+
+Imports are Season-centered and include the parent Show. A numbered Season also brings prerequisite known numbered Seasons needed for a coherent history, plus known Episodes where available.
+
+## Linked import
+
+[Section titled “Linked import”](#linked-import)
+
+A **Linked import** is the default. It continues to receive source changes for fields you have not overridden. Use it when you trust the publisher and want later corrections without repeatedly importing the same Season.
+
+The published-list table marks Seasons already linked into your Personal List. You can remove a linked import from that table. Removing it removes the link from your list; it does not alter the publisher’s snapshot.
+
+## Detached copy
+
+[Section titled “Detached copy”](#detached-copy)
+
+A **Copy** becomes independent after import. It may retain provenance, but future source changes do not flow into it. Choose this when you intend to diverge from the published metadata.
+
+## Already imported
+
+[Section titled “Already imported”](#already-imported)
+
+GenreTV prevents duplicate import actions for a Season already present in the corresponding mode and shows its imported state. Manage the resulting Show and Season from [Manage](/#/manage).
+
+# Glossary
+
+> GenreTV terms used throughout the app and help pages.
+
+**Canonical List**
+
+The system-owned default schedule shown to signed-out visitors and used as every Personal List’s baseline.
+
+**Personal List**
+
+The resolved list a signed-in user sees after applying their own additions, overrides, hidden items, and imports to the Canonical List.
+
+**List Overlay**
+
+The user-owned changes that distinguish a Personal List from its canonical baseline.
+
+**Show**
+
+A television series or one-off title. Shows are the primary management unit and own Seasons.
+
+**Season**
+
+A numbered or release-oriented part of a Show. A Season can also represent a special, movie, pilot, or other Extra Release.
+
+**Episode**
+
+An optional individual installment within a Season. A Season remains valid with no Episode rows.
+
+**Release Window**
+
+An exact date or an imprecise month, meteorological season, or year describing expected release timing.
+
+**Schedule Section**
+
+A date-sensitive grouping: Now Showing, Upcoming, Awaiting Renewal or Cancellation, or Finished.
+
+**Historical Season**
+
+A known Season retained in management but omitted from the Schedule because a later Season represents the Show’s current state.
+
+**Linked import**
+
+A Season import that continues receiving source changes for fields the recipient has not overridden.
+
+**Detached copy**
+
+An imported Season that becomes independent from future source changes.
+
+**Published snapshot**
+
+A versioned public capture of a publisher’s resolved list at the time they publish it.
+
+**Canonical Proposal**
+
+A request for a maintainer to review and selectively merge a personal Show, Season, or Episode contribution into the Canonical List.
+
+**Unknown value**
+
+Deliberately missing information. Unknown metadata is valid and is not replaced with invented placeholder values.
+
+# Troubleshooting
+
+> Resolve common loading, account, synchronization, and export problems.
+
+## The schedule is still loading
+
+[Section titled “The schedule is still loading”](#the-schedule-is-still-loading)
+
+Initial use prepares a browser-local database and loads the Canonical List, so it requires a connection. Leave the page open while the loading panel is visible. Returning visitors can open previously loaded data offline. If initial loading never completes, check connectivity and reload once. Persistent failures may indicate that browser storage is unavailable or the synchronization service cannot be reached.
+
+## A change has not synchronized
+
+[Section titled “A change has not synchronized”](#a-change-has-not-synchronized)
+
+A successful editor save means the change is durable locally. It may still be pending, delayed, conflicted, or quarantined before the server accepts it. Select the **Synchronization** status in the header to inspect the queue. Reconnection retries ordinary queued work automatically; the Synchronization page offers manual retry and explicit discard actions for terminal problems.
+
+Do not clear site storage to repair synchronization unless you intend to delete the local database and any unsynchronized changes.
+
+## An application update is waiting
+
+[Section titled “An application update is waiting”](#an-application-update-is-waiting)
+
+GenreTV does not silently replace a running application. Use the update prompt when it appears. If local changes are still pending, the update action remains disabled; inspect Synchronization and let the queue settle before reloading into the new version.
+
+## My filters came back
+
+[Section titled “My filters came back”](#my-filters-came-back)
+
+Schedule and management view preferences are deliberately saved in this browser. Clear the active controls in the app. Clearing site storage also removes preferences, but may remove the local database and other GenreTV browser data as well.
+
+## Signing out did not remove local data
+
+[Section titled “Signing out did not remove local data”](#signing-out-did-not-remove-local-data)
+
+That is expected. GenreTV keeps each account’s mapped PGlite store because it may contain account data or unsynced writes. Delete GenreTV site data through browser settings only when you intentionally want to remove that local store.
+
+## Password reset says the recovery session is missing
+
+[Section titled “Password reset says the recovery session is missing”](#password-reset-says-the-recovery-session-is-missing)
+
+Open the recovery link from the email in the same browser before setting the new password. Request a fresh recovery email if the link has expired.
+
+## A database export failed
+
+[Section titled “A database export failed”](#a-database-export-failed)
+
+Database export tooling is downloaded when the action is invoked. Confirm that the browser can download files and fetch additional application assets. For a personal local-database export, remain signed in and wait for the local store to finish loading.
+
+## A published Season cannot be imported again
+
+[Section titled “A published Season cannot be imported again”](#a-published-season-cannot-be-imported-again)
+
+GenreTV marks imports already linked or copied into your Personal List and prevents duplicate actions. Remove an existing linked import when you intend to stop following it, or manage the imported Show directly.
